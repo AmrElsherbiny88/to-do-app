@@ -1,46 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   
-    <title>Document</title>
-    <link rel="stylesheet" href="Bootstrap\cdn.jsdelivr.net_npm_bootstrap@5.0.2_dist_css_bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="Bootstrap\cdn.jsdelivr.net_npm_bootstrap@5.0.2_dist_css_bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style.css">
+  <title>To-Do App Amr-Elsherbiny</title>
+  <style>
+ 
+  </style>
 </head>
-<body>
-  <nav class="navbar navbar-dark bg-dark">
+<body class="text-white ">
+
+  <nav class="navbar navbar-dark ">
     <div class="container-fluid">
-      <a class="navbar-brand" href="https://amr-elsherbiny-5r94.vercel.app/">AmrElsherbiny</a>
+      <a class="navbar-brand" href="https://amr-elsherbiny.vercel.app/">AmrElsherbiny</a>
     </div>
   </nav>
+
+  <section class="container">
+    <h1 class="text-center mt-5">To-Do App</h1>
+
+    <div class="text-center  mt-4 mb-5">
+      <input style="outline: none;" class=" me-1 bg-transparent border-bottom border-white py-1  rounded px-1 outline-none overflow-hidden text-white" id="task-input" type="text" placeholder="Add a task here">
+      <button onclick="addTask()" class="bg-success rounded border-0 py-1 px-3 text-white">Add Task</button>
+    </div>
+  
+    <div id="tasks-div mb-3">
+      <h2 class=" mb-4">Active Tasks</h2>
+      <ul id="task-list"></ul>
+    </div>
+    
+  
+    <div  id="clearhistory" class=" justify-content-center mt-5">
+      <div class="">
+        <h2 class="mt-2">Task History</h2>
+        <button class="mt-1 btn-sm btn-danger mb-3 rounded"  onclick="clearHistory()">Clear All History</button>
+      </div>
+  
+      <ul id="history-list"></ul>
+  
+    </div>
+    
+  </section>
+
   
 
-
-
-    <h1 class="text-center heading mt-5">Get Shit Done</h1>
-
-    <div class="">
-      <div class="columns large-8 large-offset-2">
-        <div class="columns medium-8 text-center mt-5" >
-          <input id="todo-input" type="text" placeholder="Put You Goal"/>
-          <button onclick="addItem()" class="button expanded">Submit</button>
-        </div>
-      
-    
-      </div>
-    </div>
-    
-    
-    <div class="mt-5 text-center">
-      <div class=" justify-content-center">
-      <ul id="list-items">
-      </ul>
-      </div>
-    </div>
-
-
-<script src="Bootstrap\cdn.jsdelivr.net_npm_bootstrap@5.0.2_dist_js_bootstrap.bundle.min.js"></script>
-<script src="script.js"></script>
+  <script src="script.js"></script>
+  <script src="Bootstrap\cdn.jsdelivr.net_npm_bootstrap@5.0.2_dist_js_bootstrap.bundle.min.js"></script>
 </body>
 </html>
