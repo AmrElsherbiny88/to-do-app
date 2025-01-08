@@ -4,6 +4,7 @@ function saveData() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+
 function addTask() {
   const input = document.querySelector("#task-input");
   const taskValue = input.value.trim();
@@ -29,6 +30,7 @@ function addTask() {
   renderTasks();
 }
 
+
 function addSubtask(taskId) {
   const taskIndex = tasks.findIndex(task => task.id === taskId);
   const subtaskInput = document.querySelector(`#subtask-input-${taskId}`);
@@ -49,6 +51,7 @@ function addSubtask(taskId) {
   renderTasks();
 }
 
+
 function markTaskAsDone(taskId) {
   const taskIndex = tasks.findIndex(task => task.id === taskId);
   const task = tasks[taskIndex];
@@ -59,6 +62,7 @@ function markTaskAsDone(taskId) {
   renderTasks();
 }
 
+
 function toggleSubtask(taskId, subtaskIndex) {
   const taskIndex = tasks.findIndex(task => task.id === taskId);
   const subtask = tasks[taskIndex].subtasks[subtaskIndex];
@@ -66,6 +70,7 @@ function toggleSubtask(taskId, subtaskIndex) {
   saveData();
   renderTasks();
 }
+
 
 function deleteTask(taskId) {
   const taskIndex = tasks.findIndex(task => task.id === taskId);
@@ -81,6 +86,7 @@ function deleteFromHistory(taskId) {
   renderTasks();
 }
 
+
 function deleteSubtask(taskId, subtaskIndex) {
   const taskIndex = tasks.findIndex(task => task.id === taskId);
   tasks[taskIndex].subtasks.splice(subtaskIndex, 1);
@@ -94,18 +100,21 @@ function clearHistory() {
   renderTasks();
 }
 
+
 function toggleSubtaskInput(taskId) {
   const subtaskInputContainer = document.querySelector(`#subtask-container-${taskId}`);
   const toggleButton = document.querySelector(`#toggle-subtask-button-${taskId}`);
   
   subtaskInputContainer.classList.toggle('d-none');
 
+ 
   if (subtaskInputContainer.classList.contains('d-none')) {
     toggleButton.textContent = 'Add Subtask';
   } else {
     toggleButton.textContent = 'Close'; 
   }
 }
+
 
 function renderTasks() {
   const taskList = document.querySelector("#task-list");
@@ -115,24 +124,31 @@ function renderTasks() {
   const activeTasks = tasks.filter(task => !task.done);
   const completedTasks = tasks.filter(task => task.done);
 
+ 
   taskList.innerHTML = activeTasks
     .map((task) => {
       return `
-        <li class="mt-3 mb-4" id="task-${task.id}" draggable="true" ondragstart="dragTaskStart(event, '${task.id}')">
+        <li class="mt-3 mb-4" id="task-${task.id}" draggable="true" ondragstart="dragTask(event, '${task.id}')">
           <span class="fs-2">${task.title}</span>
+          
           <button class="btn-sm rounded btn-success ms-1 me-1" onclick="markTaskAsDone('${task.id}')">
           <i class="fa-solid fa-check"></i>
           </button>
           <button class="btn-sm rounded btn-danger me-1" onclick="deleteTask('${task.id}')"><i class="fa-solid fa-trash"></i></button>
+          
+          <!-- Toggle Subtask Input Button -->
           <button class="btn-sm rounded btn-primary" id="toggle-subtask-button-${task.id}" onclick="toggleSubtaskInput('${task.id}')">
            <i class="fa-solid fa-plus"></i>
           </button>
+          
+          <!-- Subtask Input Form -->
           <div id="subtask-container-${task.id}" class="d-none mt-2">
             <input class="me-1 bg-transparent border-bottom border-white py-1 rounded px-1 outline-none overflow-hidden text-white" id="subtask-input-${task.id}" type="text" placeholder="Add a subtask">
             <button class="btn-sm rounded btn-success" onclick="addSubtask('${task.id}')"> <i class="fa-solid fa-plus"></i></button>
           </div>
           <br>
           <small class="mt-2 text-secondary">(Created: ${task.createdDate})</small>
+
           <ul>
             ${task.subtasks
               .map(
@@ -153,6 +169,7 @@ function renderTasks() {
     })
     .join("");
 
+
   historyList.innerHTML = completedTasks
     .map((task) => {
       return `
@@ -165,43 +182,25 @@ function renderTasks() {
     })
     .join("");
 
+
   clearHistoryButton.style.display = completedTasks.length > 0 ? 'block' : 'none';
 }
 
-let isDragging = false;
-let draggedTaskId = null;
 
-function dragTaskStart(event, taskId) {
-  isDragging = true;
-  draggedTaskId = taskId;
-
-  if (event.type === 'dragstart') {
-    event.dataTransfer.setData("taskId", taskId);
-  }
-
-  if (event.type === 'touchstart') {
-    event.preventDefault(); 
-  }
+function dragTask(event, taskId) {
+  event.dataTransfer.setData("taskId", taskId);
 }
 
-function dragTaskMove(event) {
-  if (!isDragging) return;
 
-  if (event.type === 'dragover' || event.type === 'touchmove') {
-    event.preventDefault();
-  }
-}
+document.querySelector("#task-list").addEventListener("dragover", (event) => {
+  event.preventDefault();
+});
 
-function dragTaskEnd(event) {
-  isDragging = false;
-  draggedTaskId = null;
-}
 
-function dropTask(event) {
-  if (!draggedTaskId) return;
-
+document.querySelector("#task-list").addEventListener("drop", (event) => {
+  const draggedTaskId = event.dataTransfer.getData("taskId");
   const droppedTaskId = event.target.closest("li")?.id?.replace('task-', '');
-  if (!droppedTaskId || draggedTaskId === droppedTaskId) return;
+  if (!draggedTaskId || !droppedTaskId || draggedTaskId === droppedTaskId) return;
 
   const draggedTaskIndex = tasks.findIndex(task => task.id === draggedTaskId);
   const droppedTaskIndex = tasks.findIndex(task => task.id === droppedTaskId);
@@ -212,25 +211,9 @@ function dropTask(event) {
 
   saveData();
   renderTasks();
-}
+});
 
-document.addEventListener('DOMContentLoaded', () => {
-  const taskList = document.querySelector("#task-list");
 
-  taskList.addEventListener("dragover", dragTaskMove);
-  taskList.addEventListener("drop", dropTask);
-
-  taskList.addEventListener("touchmove", dragTaskMove);
-  taskList.addEventListener("touchend", dropTask);
-
-  const taskItems = document.querySelectorAll('#task-list li');
-  taskItems.forEach(item => {
-    item.addEventListener("dragstart", (event) => dragTaskStart(event, item.id.replace('task-', '')));
-    item.addEventListener("dragend", dragTaskEnd);
-
-    item.addEventListener("touchstart", (event) => dragTaskStart(event, item.id.replace('task-', '')));
-    item.addEventListener("touchend", dragTaskEnd);
-  });
-
+document.addEventListener("DOMContentLoaded", () => {
   renderTasks();
 });
