@@ -1,12 +1,10 @@
-// Load tasks from localStorage
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-// Function to save tasks to localStorage
 function saveData() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-// Function to add a new task
+
 function addTask() {
   const input = document.querySelector("#task-input");
   const taskValue = input.value.trim();
@@ -16,7 +14,6 @@ function addTask() {
     return;
   }
 
-  // Create a unique id based on the current timestamp
   const taskId = new Date().getTime().toString();
 
   tasks.push({
@@ -33,7 +30,7 @@ function addTask() {
   renderTasks();
 }
 
-// Function to add a subtask to a task
+
 function addSubtask(taskId) {
   const taskIndex = tasks.findIndex(task => task.id === taskId);
   const subtaskInput = document.querySelector(`#subtask-input-${taskId}`);
@@ -54,18 +51,18 @@ function addSubtask(taskId) {
   renderTasks();
 }
 
-// Function to mark a task as done
+
 function markTaskAsDone(taskId) {
   const taskIndex = tasks.findIndex(task => task.id === taskId);
   const task = tasks[taskIndex];
-  task.done = !task.done; // Toggle completion status
+  task.done = !task.done; 
   task.completedDate = task.done ? new Date().toLocaleDateString("en-US") : null;
 
   saveData();
   renderTasks();
 }
 
-// Function to mark a subtask as done/undone
+
 function toggleSubtask(taskId, subtaskIndex) {
   const taskIndex = tasks.findIndex(task => task.id === taskId);
   const subtask = tasks[taskIndex].subtasks[subtaskIndex];
@@ -74,7 +71,7 @@ function toggleSubtask(taskId, subtaskIndex) {
   renderTasks();
 }
 
-// Function to delete a task
+
 function deleteTask(taskId) {
   const taskIndex = tasks.findIndex(task => task.id === taskId);
   tasks.splice(taskIndex, 1);
@@ -82,7 +79,6 @@ function deleteTask(taskId) {
   renderTasks();
 }
 
-// Function to delete a task from history
 function deleteFromHistory(taskId) {
   const taskIndex = tasks.findIndex(task => task.id === taskId);
   tasks.splice(taskIndex, 1);
@@ -90,7 +86,7 @@ function deleteFromHistory(taskId) {
   renderTasks();
 }
 
-// Function to delete a subtask
+
 function deleteSubtask(taskId, subtaskIndex) {
   const taskIndex = tasks.findIndex(task => task.id === taskId);
   tasks[taskIndex].subtasks.splice(subtaskIndex, 1);
@@ -98,29 +94,28 @@ function deleteSubtask(taskId, subtaskIndex) {
   renderTasks();
 }
 
-// Function to clear all history
 function clearHistory() {
   tasks = tasks.filter(task => !task.done);
   saveData();
   renderTasks();
 }
 
-// Function to toggle subtask input visibility and change button text
+
 function toggleSubtaskInput(taskId) {
   const subtaskInputContainer = document.querySelector(`#subtask-container-${taskId}`);
   const toggleButton = document.querySelector(`#toggle-subtask-button-${taskId}`);
   
-  subtaskInputContainer.classList.toggle('d-none'); // Toggle visibility
+  subtaskInputContainer.classList.toggle('d-none');
 
-  // Change the button text based on whether the input is visible
+ 
   if (subtaskInputContainer.classList.contains('d-none')) {
-    toggleButton.textContent = 'Add Subtask'; // Show 'Add Subtask' if hidden
+    toggleButton.textContent = 'Add Subtask';
   } else {
-    toggleButton.textContent = 'Close'; // Show 'Close' if visible
+    toggleButton.textContent = 'Close'; 
   }
 }
 
-// Function to render active tasks and history
+
 function renderTasks() {
   const taskList = document.querySelector("#task-list");
   const historyList = document.querySelector("#history-list");
@@ -129,7 +124,7 @@ function renderTasks() {
   const activeTasks = tasks.filter(task => !task.done);
   const completedTasks = tasks.filter(task => task.done);
 
-  // Render active tasks
+ 
   taskList.innerHTML = activeTasks
     .map((task) => {
       return `
@@ -174,7 +169,7 @@ function renderTasks() {
     })
     .join("");
 
-  // Render completed tasks in history
+
   historyList.innerHTML = completedTasks
     .map((task) => {
       return `
@@ -187,21 +182,21 @@ function renderTasks() {
     })
     .join("");
 
-  // Show or hide the "Clear All History" button based on whether there are completed tasks
+
   clearHistoryButton.style.display = completedTasks.length > 0 ? 'block' : 'none';
 }
 
-// Drag start function to set up the task being dragged
+
 function dragTask(event, taskId) {
   event.dataTransfer.setData("taskId", taskId);
 }
 
-// Allow dropping on the task list by preventing the default behavior
+
 document.querySelector("#task-list").addEventListener("dragover", (event) => {
   event.preventDefault();
 });
 
-// Handle the drop event to reorder the tasks
+
 document.querySelector("#task-list").addEventListener("drop", (event) => {
   const draggedTaskId = event.dataTransfer.getData("taskId");
   const droppedTaskId = event.target.closest("li")?.id?.replace('task-', '');
@@ -210,7 +205,6 @@ document.querySelector("#task-list").addEventListener("drop", (event) => {
   const draggedTaskIndex = tasks.findIndex(task => task.id === draggedTaskId);
   const droppedTaskIndex = tasks.findIndex(task => task.id === droppedTaskId);
 
-  // Swap tasks in the array
   const temp = tasks[draggedTaskIndex];
   tasks[draggedTaskIndex] = tasks[droppedTaskIndex];
   tasks[droppedTaskIndex] = temp;
@@ -219,7 +213,7 @@ document.querySelector("#task-list").addEventListener("drop", (event) => {
   renderTasks();
 });
 
-// Initial rendering of tasks
+
 document.addEventListener("DOMContentLoaded", () => {
   renderTasks();
 });
